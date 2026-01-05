@@ -1,8 +1,5 @@
 "use client";
 
-import React from "react";
-import { useForm } from "react-hook-form";
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -18,7 +15,11 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { mongoConnect } from "@/lib/mongoConnect";
 import { Eye, EyeOff } from "lucide-react";
+import Link from "next/link";
+import React from "react";
+import { useForm } from "react-hook-form";
 
 interface SignupValues {
   name: string;
@@ -96,7 +97,7 @@ export default function SignupPage() {
                   Sign Up with Google
                 </Button>
                 <FieldDescription className="text-center mt-2">
-                  Already have an account? <a href="/login">Login</a>
+                  Already have an account? <Link href="/login">Login</Link>
                 </FieldDescription>
               </Field>
             </FieldGroup>

@@ -8,6 +8,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { useAuth } from "@/hooks/useAuth";
 import { Calendar, Menu } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -15,8 +16,8 @@ import { useState } from "react";
 
 export const Header = () => {
   const router = useRouter();
+  const { isAuthenticated, logout } = useAuth();
   const [mobileOpen, setMobileOpen] = useState(false);
-  const isLoggedIn = false;
 
   const user = {
     name: "Touhid",
@@ -27,8 +28,10 @@ export const Header = () => {
     { title: "Home", url: "/" },
     { title: "Events", url: "/events" },
     { title: "About", url: "/about" },
-    ...(isLoggedIn ? [{ title: "My Events", url: "/my-events" }] : []),
-    ...(isLoggedIn ? [{ title: "Create Event", url: "/events/create" }] : []),
+    ...(isAuthenticated ? [{ title: "My Events", url: "/my-events" }] : []),
+    ...(isAuthenticated
+      ? [{ title: "Create Event", url: "/events/create" }]
+      : []),
   ];
 
   const handleNavigation = (url: string) => {
@@ -38,6 +41,7 @@ export const Header = () => {
 
   const handleLogoutClick = () => {
     setMobileOpen(false);
+    logout();
   };
 
   return (
@@ -68,28 +72,24 @@ export const Header = () => {
 
         {/* Desktop Auth Buttons */}
         <div className="hidden md:flex items-center gap-3">
-          {isLoggedIn ? (
+          {isAuthenticated ? (
             <>
               <div className="text-sm text-muted-foreground">{user.name}</div>
-              <Button onClick={handleLogoutClick} variant="outline" size="sm">
+              <Button onClick={handleLogoutClick} size="sm">
                 Logout
               </Button>
             </>
           ) : (
             <>
               <Button
-                onClick={() => handleNavigation("/login")}
-                variant="outline"
-                size="sm"
-              >
-                Login
-              </Button>
-              <Button
                 variant="outline"
                 onClick={() => handleNavigation("/signup")}
                 size="sm"
               >
                 Sign Up
+              </Button>
+              <Button onClick={() => handleNavigation("/login")} size="sm">
+                Login
               </Button>
             </>
           )}
@@ -126,7 +126,7 @@ export const Header = () => {
 
               {/* Mobile Auth Buttons */}
               <div className="flex flex-col gap-2 pt-4 border-t">
-                {isLoggedIn ? (
+                {isAuthenticated ? (
                   <>
                     <div className="px-3 py-2 text-sm text-muted-foreground">
                       <div className="font-medium text-foreground">
