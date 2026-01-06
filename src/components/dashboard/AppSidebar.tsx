@@ -1,5 +1,5 @@
-import * as React from "react";
 import { GalleryVerticalEnd } from "lucide-react";
+import * as React from "react";
 
 import {
   Sidebar,
@@ -23,27 +23,23 @@ const data = {
       url: "#",
       items: [
         {
-          title: "Installation",
-          url: "#",
-        },
-        {
-          title: "Project Structure",
-          url: "#",
+          title: "Overview",
+          url: "overview",
         },
       ],
     },
     {
-      title: "Building Your Application",
+      title: "Event Management",
       url: "#",
       items: [
         {
-          title: "Routing",
-          url: "#",
+          title: "All Events",
+          url: "all-events",
+          isActive: true,
         },
         {
-          title: "Data Fetching",
-          url: "#",
-          isActive: true,
+          title: "Create Event",
+          url: "create-event",
         },
         {
           title: "Rendering",

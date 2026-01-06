@@ -1,5 +1,5 @@
 export interface TEvent {
-  id: string;
+  id?: string;
   title: string;
   date: string;
   location: string;
