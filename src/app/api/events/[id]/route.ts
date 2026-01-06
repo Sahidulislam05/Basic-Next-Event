@@ -5,10 +5,11 @@ import { NextRequest, NextResponse } from "next/server";
 // Get event by ID
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: { id: string } }
 ) {
   try {
-    const { id } = params;
+    const { id } = await context.params;
+
     const { client, db } = await mongoConnect();
     const event = await db
       .collection("events")
@@ -17,7 +18,17 @@ export async function GET(
 
     if (!event)
       return NextResponse.json({ error: "Event not found" }, { status: 404 });
-    return NextResponse.json(event);
+
+    const formattedEvent = {
+      id: event._id.toString(),
+      title: event.title,
+      date: event.date,
+      location: event.location,
+      image: event.image,
+      description: event.description,
+    };
+
+    return NextResponse.json(formattedEvent);
   } catch (error) {
     console.error(error);
     return NextResponse.json(
@@ -29,15 +40,17 @@ export async function GET(
 
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: { id: string } }
 ) {
   try {
+    const { id } = await context.params;
+
     const { db, client } = await mongoConnect();
     const data = await req.json();
 
     const result = await db
       .collection("events")
-      .updateOne({ _id: new ObjectId(params.id) }, { $set: data });
+      .updateOne({ _id: new ObjectId(id) }, { $set: data });
 
     // client.close();
 
@@ -57,14 +70,16 @@ export async function PUT(
 
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: { id: string } }
 ) {
   try {
+    const { id } = await context.params;
+
     const { db, client } = await mongoConnect();
 
     const result = await db
       .collection("events")
-      .deleteOne({ _id: new ObjectId(params.id) });
+      .deleteOne({ _id: new ObjectId(id) });
     // client.close();
 
     if (result.deletedCount === 0) {

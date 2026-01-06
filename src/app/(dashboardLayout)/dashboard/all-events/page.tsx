@@ -1,5 +1,6 @@
 "use client";
 
+import { UpdateEventModal } from "@/components/designs/UpdateEventModal";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -18,25 +19,27 @@ import {
 } from "@/components/ui/table";
 import { TEvent } from "@/types/event";
 import Link from "next/link";
-import React from "react";
+import { useEffect, useState } from "react";
 
 export default function AllEventsPage() {
-  const [events, setEvents] = React.useState<TEvent[]>([]);
-  const [loading, setLoading] = React.useState(true);
+  const [events, setEvents] = useState<TEvent[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
+  const [modalOpen, setModalOpen] = useState(false);
 
-  React.useEffect(() => {
-    const fetchEvents = async () => {
-      try {
-        const res = await fetch("/api/events");
-        const data = await res.json();
-        setEvents(data);
-      } catch (error) {
-        console.error("Failed to fetch events", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const fetchEvents = async () => {
+    try {
+      const res = await fetch("/api/events");
+      const data = await res.json();
+      setEvents(data);
+    } catch (error) {
+      console.error("Failed to fetch events", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchEvents();
   }, []);
 
@@ -83,11 +86,17 @@ export default function AllEventsPage() {
                       {event.image}
                     </TableCell>
                     <TableCell className="text-right space-x-2">
-                      <Link href={`/events/${event.id}/edit`}>
-                        <Button size="sm" variant="outline">
-                          Edit
-                        </Button>
-                      </Link>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => {
+                          setSelectedEventId(event.id!);
+                          setModalOpen(true);
+                        }}
+                      >
+                        Edit
+                      </Button>
+
                       <Button size="sm" variant="destructive" disabled>
                         Delete
                       </Button>
@@ -99,6 +108,13 @@ export default function AllEventsPage() {
           )}
         </CardContent>
       </Card>
+
+      <UpdateEventModal
+        eventId={selectedEventId || ""}
+        open={modalOpen}
+        onClose={setModalOpen}
+        onUpdated={fetchEvents}
+      />
     </main>
   );
 }

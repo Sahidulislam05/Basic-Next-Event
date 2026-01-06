@@ -8,7 +8,17 @@ export async function GET() {
     const { db, client } = await mongoConnect();
     const events = await db.collection("events").find().toArray();
     // client.close();
-    return NextResponse.json(events);
+
+    const formattedEvents = events.map((event) => ({
+      id: event._id.toString(),
+      title: event.title,
+      date: event.date,
+      location: event.location,
+      image: event.image,
+      description: event.description,
+    }));
+
+    return NextResponse.json(formattedEvents);
   } catch (error) {
     console.error(error);
     return NextResponse.json(

@@ -28,9 +28,11 @@ export const Header = () => {
     { title: "Home", url: "/" },
     { title: "Events", url: "/events" },
     { title: "About", url: "/about" },
-    ...(isAuthenticated ? [{ title: "My Events", url: "/my-events" }] : []),
     ...(isAuthenticated
-      ? [{ title: "Create Event", url: "/events/create" }]
+      ? [{ title: "Dashboard", url: "/dashboard/overview" }]
+      : []),
+    ...(isAuthenticated
+      ? [{ title: "Create Event", url: "/dashboard/create-event" }]
       : []),
   ];
 
