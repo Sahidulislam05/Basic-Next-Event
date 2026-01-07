@@ -92,12 +92,20 @@ app/
 ### Create `app/api/auth/[...nextauth]/route.ts`:
 
 ```typescript
-import NextAuth from "next-auth";
-import GoogleProvider from "next-auth/providers/google";
+import { handlers } from "@/lib/auth";
 
-const handler = NextAuth({
+export const { GET, POST } = handlers;
+```
+
+### Create `lib/auth.ts`:
+
+```typescript
+import NextAuth from "next-auth";
+import Google from "next-auth/providers/google";
+
+export const { handlers, auth, signIn, signOut } = NextAuth({
   providers: [
-    GoogleProvider({
+    Google({
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     }),
@@ -105,10 +113,23 @@ const handler = NextAuth({
   session: {
     strategy: "jwt",
   },
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+        token.email = user.email;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      if (session.user) {
+        session.user.id = token.id as string;
+      }
+      return session;
+    },
+  },
   secret: process.env.NEXTAUTH_SECRET,
 });
-
-export { handler as GET, handler as POST };
 ```
 
 That's it for basic setup! ✅

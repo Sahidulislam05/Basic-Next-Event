@@ -17,6 +17,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { setToken } from "@/lib/token";
 import { Eye, EyeOff } from "lucide-react";
+import { signIn } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React from "react";
@@ -96,7 +97,12 @@ export default function LoginPage() {
 
               <Field>
                 <Button type="submit">Login</Button>
-                <Button variant="outline" type="button" className="mt-2">
+                <Button
+                  variant="outline"
+                  type="button"
+                  className="mt-2"
+                  onClick={() => signIn("google")}
+                >
                   Login with Google
                 </Button>
                 <FieldDescription className="text-center mt-2">
